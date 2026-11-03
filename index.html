@@ -49,6 +49,8 @@ button:focus-visible{outline:2px solid var(--amber);outline-offset:2px}
 #cmp::after{content:"";position:absolute;left:50%;top:0;width:2px;height:100%;margin-left:-1px;background:var(--amber);box-shadow:0 0 6px var(--amber)}
 #cmpm{position:absolute;top:2px;width:8px;height:8px;margin-left:-4px;border-radius:50%;background:var(--cold);box-shadow:0 0 6px var(--cold)}
 #mm{position:absolute;top:118px;right:14px;width:150px;height:110px;padding:0}
+@media (max-width:700px),(max-height:500px){#mm{width:90px!important;height:66px!important;top:auto!important;bottom:calc(150px + env(safe-area-inset-bottom))!important;right:10px!important;opacity:.85}#tl{min-width:150px;transform:scale(.72);transform-origin:top left}#tr{min-width:100px;transform:scale(.72);transform-origin:top right}#cmp{width:170px;top:calc(4px + env(safe-area-inset-top));transform:translateX(-50%) scale(.8)}#joy{transform:scale(.8);transform-origin:bottom left}#bst{transform:scale(.8);transform-origin:bottom right}#msg{font-size:13px;bottom:auto;top:42%}}
+@media (orientation:portrait) and (max-width:700px){#cmp{top:auto;bottom:calc(8px + env(safe-area-inset-bottom))}}
 </style></head><body>
 <div id="stage"><canvas id="c"></canvas><div id="flash"></div>
 <div id="hud">
