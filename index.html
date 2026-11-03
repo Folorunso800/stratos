@@ -7,13 +7,13 @@
 *{box-sizing:border-box}
 html,body{margin:0;height:100%;overflow:hidden;background:#07080f;color:var(--ivory);font-family:"Segoe UI",system-ui,-apple-system,sans-serif;-webkit-user-select:none;user-select:none;touch-action:none}
 body{display:flex;align-items:center;justify-content:center}
-#stage{position:relative;overflow:hidden;background:#000;box-shadow:0 0 60px rgba(255,179,71,.15)}
+#stage{position:fixed;inset:0;overflow:hidden;background:#000;box-shadow:0 0 60px rgba(255,179,71,.15)}
 #c{display:block;width:100%;height:100%}
 #flash{position:absolute;inset:0;background:#fff;opacity:0;pointer-events:none;mix-blend-mode:screen}
 #hud{position:absolute;inset:0;pointer-events:none;font-size:14px;text-shadow:0 1px 3px rgba(0,0,0,.6)}
 .p{background:var(--panel);border:1px solid rgba(240,230,208,.18);border-radius:12px;padding:10px 14px;backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px);box-shadow:0 4px 18px rgba(0,0,0,.35)}
-#tl{position:absolute;top:14px;left:14px;min-width:220px}
-#tr{position:absolute;top:14px;right:14px;text-align:right;min-width:150px}
+#tl{position:absolute;top:calc(14px + env(safe-area-inset-top));left:calc(14px + env(safe-area-inset-left));min-width:220px}
+#tr{position:absolute;top:calc(14px + env(safe-area-inset-top));right:calc(14px + env(safe-area-inset-right));text-align:right;min-width:150px}
 #zone{font:italic 700 17px Georgia,serif;color:var(--amber);margin-bottom:2px}
 #mis{color:#c9c2b0;font-size:13px;margin-bottom:8px}
 .g{display:flex;align-items:center;gap:8px;margin-top:5px;font-size:12px;letter-spacing:.06em;text-transform:uppercase;color:#c9c2b0}
@@ -27,9 +27,9 @@ body{display:flex;align-items:center;justify-content:center}
 #tgd{position:absolute;top:38px;left:50%;transform:translateX(-50%);white-space:nowrap;color:var(--amber);font-size:12px;font-weight:600}
 #ban{position:absolute;top:22%;left:50%;transform:translateX(-50%);width:min(80%,620px);text-align:center;font:italic 600 20px/1.4 Georgia,serif;color:var(--ivory);text-shadow:0 0 18px rgba(255,179,71,.7),0 2px 4px rgba(0,0,0,.7);opacity:0;transition:opacity .8s}
 #msg{position:absolute;bottom:18px;left:50%;transform:translateX(-50%);max-width:70%;text-align:center;opacity:0;transition:opacity .5s}
-#joy{position:absolute;left:28px;bottom:28px;width:110px;height:110px;border-radius:50%;background:rgba(14,16,28,.35);border:1px solid rgba(240,230,208,.25);pointer-events:auto;touch-action:none}
+#joy{position:absolute;left:calc(28px + env(safe-area-inset-left));bottom:calc(28px + env(safe-area-inset-bottom));width:110px;height:110px;border-radius:50%;background:rgba(14,16,28,.35);border:1px solid rgba(240,230,208,.25);pointer-events:auto;touch-action:none}
 #knob{position:absolute;left:50%;top:50%;width:44px;height:44px;margin:-22px 0 0 -22px;border-radius:50%;background:radial-gradient(circle at 35% 35%,var(--ivory),#b9ad94);box-shadow:0 0 12px rgba(255,179,71,.5)}
-#bst{position:absolute;right:28px;bottom:36px;width:96px;height:96px;border-radius:50%;pointer-events:auto;touch-action:none;background:var(--panel);color:var(--amber);border:2px solid var(--amber);font:700 16px inherit;font-family:inherit;box-shadow:0 0 14px rgba(255,179,71,.35)}
+#bst{position:absolute;right:calc(28px + env(safe-area-inset-right));bottom:calc(36px + env(safe-area-inset-bottom));width:96px;height:96px;border-radius:50%;pointer-events:auto;touch-action:none;background:var(--panel);color:var(--amber);border:2px solid var(--amber);font:700 16px inherit;font-family:inherit;box-shadow:0 0 14px rgba(255,179,71,.35)}
 #bst.on{background:var(--amber);color:#2a1a08;box-shadow:0 0 28px var(--amber)}
 @media (hover:hover) and (pointer:fine){#joy,#bst{display:none}}
 #ov{position:absolute;inset:0;display:none;align-items:center;justify-content:center;background:radial-gradient(ellipse at center,rgba(40,24,10,.55),rgba(5,6,12,.85));z-index:5}
@@ -89,8 +89,8 @@ const skyU={top:{value:new THREE.Color()},bot:{value:new THREE.Color()}};
 const sky=new THREE.Mesh(new THREE.SphereGeometry(1900,24,12),new THREE.ShaderMaterial({uniforms:skyU,side:THREE.BackSide,depthWrite:false,fog:false,
  vertexShader:'varying float h;void main(){h=normalize(position).y;gl_Position=projectionMatrix*modelViewMatrix*vec4(position,1.);}',
  fragmentShader:'uniform vec3 top,bot;varying float h;void main(){gl_FragColor=vec4(mix(bot,top,smoothstep(-.05,.6,h)),1.);}'}));sky.renderOrder=-1;sc.add(sky);
-function rs(){const ar=innerWidth>=innerHeight?16/9:1,w=Math.floor(Math.min(innerWidth,innerHeight*ar)),h=Math.floor(w/ar),st=$('stage');st.style.width=w+'px';st.style.height=h+'px';rd.setSize(w,h,false);cam.aspect=w/h;cam.updateProjectionMatrix();if(CMP){CMP.setPixelRatio&&CMP.setPixelRatio(rd.getPixelRatio());CMP.setSize(w,h)}}
-addEventListener('resize',rs);rs();
+function rs(){const vv=window.visualViewport,w=Math.floor(vv?vv.width:innerWidth),h=Math.floor(vv?vv.height:innerHeight),st=$('stage');st.style.width=w+'px';st.style.height=h+'px';rd.setSize(w,h,false);cam.aspect=w/h;cam.updateProjectionMatrix();if(CMP){CMP.setPixelRatio&&CMP.setPixelRatio(rd.getPixelRatio());CMP.setSize(w,h)}}
+addEventListener('resize',rs);addEventListener('orientationchange',()=>setTimeout(rs,250));window.visualViewport&&visualViewport.addEventListener('resize',rs);rs();function fsg(){try{const d=document.documentElement;if(!document.fullscreenElement&&d.requestFullscreen)d.requestFullscreen({navigationUI:'hide'}).then(()=>{screen.orientation&&screen.orientation.lock&&screen.orientation.lock('landscape').catch(()=>{});setTimeout(rs,300)}).catch(()=>{})}catch(e){}}
 function swap(key,holder,proc){if(!ASSETS[key]||!THREE.GLTFLoader)return;new THREE.GLTFLoader().load(ASSETS[key],g=>{holder.remove(proc);holder.add(g.scene)})}
 // Geometry merge helper: parts -> one vertex-coloured geometry (1 draw call)
 function MGeo(parts){const P=[],N=[],Cc=[];parts.forEach(([g,c,x=0,y=0,z=0,rx=0,ry=0,rz=0,sx=1,sy=1,sz=1])=>{g=g.index?g.toNonIndexed():g.clone();
@@ -228,7 +228,7 @@ o.position.copy(pv).lerp(p,.5).addScaledVector(side,(30+R()*18)*(R()<.5?-1:1));o
  banner(cfg.intro,7);say('Hold Boost to dash through the rings.',6);S.run=true}
 function banner(t,d){$('ban').textContent=t;$('ban').style.opacity=1;banT=d}
 function say(t,d=6){$('msg').textContent=t;$('msg').style.opacity=1;msgT=d}
-function show(t,st,p,b,fn){$('ov').innerHTML='<div class="box"><h2>'+t+'</h2><div class="st">'+st+'</div><p>'+p+'</p><button>'+b[0]+'<small>'+b[1]+'</small></button></div>';$('ov').querySelector('button').onclick=()=>{audio();fn()};$('ov').style.display='flex'}
+function show(t,st,p,b,fn){$('ov').innerHTML='<div class="box"><h2>'+t+'</h2><div class="st">'+st+'</div><p>'+p+'</p><button>'+b[0]+'<small>'+b[1]+'</small></button></div>';$('ov').querySelector('button').onclick=()=>{fsg();audio();fn()};$('ov').style.display='flex'}
 function endLevel(win){S.run=false;
  if(!win){return show('Hull torn','Level '+(L+1)+' failed','Score '+S.score.toLocaleString()+'. Try the line again.',['Retry level','Fly it again'],()=>startLevel(L))}
  const bonus=Math.max(0,Math.round(C.cnt*9-S.t))*10;S.score+=bonus;TOTAL+=S.score;
